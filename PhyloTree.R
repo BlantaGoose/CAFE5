@@ -1,11 +1,8 @@
 ##食性データフレームを、系統樹の隣にプロットしたい
-
-
 library(ape)
 library(tidyverse)
 library(ggplot2)
 library(ggtree)
-library(igraph)
 
 ##系統樹と食性データを結合
 path = "230904"
@@ -74,23 +71,21 @@ tree2
 ggtree(tree2, layout = "circular", branch.length = "none") +
   geom_tippoint(aes(shape=`Diet-5Cat`), size = 5)
 
-
-okabe_ito = palette.colors(9L, "Okabe-Ito")
+##okabe_itoは何故か色分けがされない
+okabe_ito = palette.colors(n = 9L, "Okabe-Ito")
 t <- ggtree(tree2, layout = "circular", branch.length = "none") +
   geom_tiplab(color = "black", 
               offset = 1, 
               size = 3, 
               geom = "text", align = TRUE) + ##geom_tiplabで種名
   geom_tippoint(mapping = aes(color = `Diet-5Cat`), size = 5) +
+  scale_color_manual(values = okabe_ito) +
   theme(legend.position = "bottom")
-ggsave("output/230904/ot.png", t, width = 10, height = 10)
 
-"""
-  aes(color = I(`Diet-Certainty`)) + ##IOCOrderに応じてbranchの色わけ
-  scale_color_manual(
-    name = "DietC",
-    breaks = c("A", "B", "C", "D2"),
-    labels = c("OK", "Good", "Soso", "bad"),
-    values = c("red", "orange", "blue", "black")
-    )
-"""
+virdis = palette.colors()
+t2 <- ggtree(tree2, branch.length = "none") +
+  geom_tiplab(offset = 1, size = 3, geom = "text") +
+  geom_tippoint(mapping = aes(color = `Diet-5Cat`), size = 5) +
+  scale_color_viridis_d(option = "viridis")
+t2
+ggsave("output/230904/ot.png", t, width = 10, height = 10)
